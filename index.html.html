@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>六國旅行與生活語言手冊｜Polyglot Handbook</title>
+<style>
+:root{--ink:#202a35;--muted:#687584;--paper:#f5f7f8;--card:#fff;--line:#e3e8ec;--red:#c94343;--blue:#245b83;--soft:#eaf1f6;--gold:#f4c95d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(120deg,#173d5b,#285f83);color:white;padding:24px max(18px,calc((100% - 1100px)/2)) 20px}
+.kicker{font-size:12px;letter-spacing:2px;opacity:.85}
+h1{font-size:clamp(22px,4vw,32px);margin:6px 0 4px}
+.subtitle{font-size:14px;opacity:.85;margin-bottom:16px}
+.lang-bar{display:flex;gap:8px;flex-wrap:wrap}
+.lang-btn{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:white;padding:8px 14px;border-radius:10px;font-size:14px;cursor:pointer;transition:.15s;font-weight:500}
+.lang-btn:hover{background:rgba(255,255,255,.22)}
+.lang-btn.active{background:white;color:#173d5b;border-color:white;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.wrap{max-width:1100px;margin:auto;padding:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{flex:1;min-width:210px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;background:white}
+.control{border:1px solid var(--line);background:white;padding:11px 13px;border-radius:12px;color:var(--ink);font-size:14px;cursor:pointer}
+.control.active{background:var(--soft);border-color:#9bb6ca;color:var(--blue);font-weight:600}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:thin}
+.tab{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:9px 15px;cursor:pointer;font-size:14px;color:#45515d}
+.tab.active{background:var(--blue);border-color:var(--blue);color:white}
+.summary{display:flex;justify-content:space-between;gap:12px;align-items:end;margin:10px 0 14px}
+.summary h2{font-size:20px;margin:0 0 3px}
+.summary p{font-size:13px;color:var(--muted);margin:0}
+.count{font-size:12px;color:var(--muted);white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:12px}
+.phrase{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:170px}
+.topline{display:flex;justify-content:space-between;align-items:center}
+.tag{font-size:11px;color:var(--blue);background:var(--soft);padding:4px 8px;border-radius:999px}
+.star{border:0;background:transparent;font-size:20px;color:#aab2ba;cursor:pointer;padding:0 3px}
+.star.saved{color:#d69b19}
+.target-text{font-size:21px;font-weight:700;line-height:1.35;letter-spacing:.1px;color:#16222f}
+.chinese{font-size:14px;color:#4c5966;line-height:1.5}
+.hint{font-size:12px;color:#89939c}
+.actions{display:flex;gap:8px;margin-top:auto}
+.play{border:0;border-radius:10px;background:var(--blue);color:white;padding:10px 13px;cursor:pointer;font-size:13px;flex:1;font-weight:500}
+.play:hover{background:#174766}
+.slow{border:1px solid #cbd5df;border-radius:10px;background:#f8fafc;color:#3b4956;padding:10px 13px;cursor:pointer;font-size:13px;font-weight:500}
+.slow:hover{background:#eef3f7}
+.empty{grid-column:1/-1;background:white;border:1px dashed #cbd4dc;border-radius:14px;padding:30px;text-align:center;color:var(--muted)}
+footer{max-width:1100px;margin:20px auto 35px;padding:0 18px;color:var(--muted);font-size:12px;line-height:1.7}
+.notice{background:#fff8e7;border:1px solid #f0dfad;border-radius:12px;padding:12px 14px;font-size:13px;color:#705b26;margin:14px 0}
+@media(max-width:520px){header{padding:20px 16px 16px}.wrap{padding:14px}.phrase{min-height:155px}.target-text{font-size:19px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker" id="headerKicker">POLYGLOT TRAVEL & LIFE HANDBOOK</div>
+  <h1 id="headerTitle">多國旅行與生活語言手冊</h1>
+  <div class="subtitle" id="headerSub">支援捷克語、德文、法文、西班牙語、義大利語、匈牙利語｜點擊切換語言與聆聽常速／慢速發音</div>
+  <div class="lang-bar" id="langBar"></div>
+</header>
+<main class="wrap">
+  <div class="toolbar">
+    <input id="search" class="search" type="search" placeholder="搜尋外語或中文，例如：火車、謝謝、結帳……">
+    <button id="favOnly" class="control" type="button">★ 本語收藏</button>
+    <button id="allItems" class="control active" type="button">全部內容</button>
+  </div>
+  <nav id="tabs" class="tabs" aria-label="學習單元"></nav>
+  <section class="summary">
+    <div><h2 id="sectionTitle">基本溝通</h2><p id="sectionDesc"></p></div>
+    <div class="count" id="count"></div>
+  </section>
+  <div id="cards" class="grid"></div>
+  <div class="notice" id="voiceNotice">發音提示：點擊「🔊 聽發音」為正常語速（0.95x），「🐢 慢速」為放慢語速（0.55x）。若某語言沒有聲音，請在系統設定中下載該語言的語音包，或保持網路連線使用 Chrome 內建雲端語音。</div>
+</main>
+<footer>
+  使用方式：以 Chrome 開啟本 HTML 檔即可離線或線上使用，無須登入。六種語言的「★ 我的收藏」皆獨立保存在本機瀏覽器中。
+</footer>
+
+<script>
+const db = {
+  de: {
+    label: "🇩🇪 德文",
+    kicker: "DEUTSCH FÜR DEN ALLTAG",
+    title: "德文生活與旅行手冊",
+    sub: "Praktisches Deutsch｜奧地利、德國、瑞士實用日常會話",
+    langCode: "de-DE",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"打招呼、道謝、道歉與請對方放慢語速。", items:[
+        ["Guten Tag.", "您好。／日安。", "白天最標準的禮貌問候；奧地利與巴伐利亞常說 Grüß Gott。"],
+        ["Hallo! / Tschüss!", "嗨！／再見！", "輕鬆、日常的打招呼與道別。"],
+        ["Auf Wiedersehen.", "再見。", "正式、禮貌的道別方式。"],
+        ["Vielen Dank. / Danke schön.", "非常感謝。", "日常萬用道謝。"],
+        ["Bitte. / Gern geschehen.", "請；不客氣。", "Bitte 可表示「請」、「不客氣」或「請再說一次？」。"],
+        ["Entschuldigung.", "不好意思。／請問……", "借過、道歉或向陌生人搭話的起手式。"],
+        ["Ich spreche nur ein bisschen Deutsch.", "我只會說一點點德文。", "讓對方知道你是初學者。"],
+        ["Ich verstehe nicht.", "我聽不懂。", "直接明確的表達。"],
+        ["Können Sie das bitte wiederholen?", "可以請您再說一次嗎？", "使用尊稱 Sie 的禮貌請求。"],
+        ["Können Sie bitte langsamer sprechen?", "可以請您說慢一點嗎？", "對方語速太快時非常實用。"],
+        ["Sprechen Sie Englisch?", "您會說英文嗎？", "詢問是否可用英文溝通。"],
+        ["Wie geht es Ihnen?", "您好嗎？", "禮貌問候；對熟人可說 Wie geht's?。"]
+      ]},
+      {id:"food", name:"餐廳咖啡館", desc:"訂位、點餐、飲水習慣與結帳。", items:[
+        ["Haben Sie einen Tisch frei?", "請問有空桌嗎？", "進餐廳時向服務生詢問。"],
+        ["Einen Tisch für zwei Personen, bitte.", "麻煩一張兩人桌。", "一人可將 zwei 改為 eine Person。"],
+        ["Die Speisekarte, bitte.", "麻煩給我菜單。", "簡潔自然的點餐用語。"],
+        ["Was können Sie empfehlen?", "您推薦什麼？", "請店員推薦招牌菜。"],
+        ["Ich hätte gern das Schnitzel, bitte.", "我想要一份炸肉排，謝謝。", "Ich hätte gern... 是最道地有禮的點餐句型。"],
+        ["Ein Wasser ohne Kohlensäure, bitte.", "請給我一杯無氣泡水。", "德語區預設給氣泡水，不喝氣泡務必加 ohne Kohlensäure（或 stilles Wasser）。"],
+        ["Noch ein Bier, bitte.", "再來一杯啤酒，謝謝。", "續杯常用。"],
+        ["Es hat sehr gut geschmeckt.", "非常好吃。", "用餐後稱讚餐點。"],
+        ["Die Rechnung, bitte.", "麻煩結帳。", "示意服務生過來買單。"],
+        ["Kann ich mit Karte zahlen?", "可以刷卡嗎？", "部分德國小店只收現金，結帳前先確認。"],
+        ["Zusammen oder getrennt?", "一起付還是分開付？", "服務生結帳時必問的一句話。"],
+        ["Stimmt so.", "不用找了。", "在德奧餐廳給小費時直接說這句（例如帳單 18.5 歐，給 20 歐說 Stimmt so）。"]
+      ]},
+      {id:"transport", name:"交通與問路", desc:"火車、地鐵、買票與月台確認。", items:[
+        ["Wo ist der Bahnhof?", "火車站在哪裡？", "Hauptbahnhof 指中央車站。"],
+        ["Wo ist die nächste U-Bahn-Station?", "最近的地鐵站在哪裡？", "U-Bahn 為地鐵，S-Bahn 為市郊快鐵。"],
+        ["Eine Fahrkarte nach Wien, bitte.", "麻煩給我一張到維也納的車票。", "nach + 城市名表示前往某地。"],
+        ["Wann fährt der Zug ab?", "火車幾點出發？", "詢問發車時間。"],
+        ["Von welchem Gleis fährt der Zug ab?", "火車從第幾月台發車？", "Gleis 是月台。"],
+        ["Muss ich umsteigen?", "我需要轉車嗎？", "長途搭車確認是否直達。"],
+        ["Wo muss ich aussteigen?", "我應該在哪一站下車？", "請教車長或乘客。"],
+        ["Hat der Zug Verspätung?", "火車誤點了嗎？", "德鐵旅行必備單字 Verspätung（誤點）。"],
+        ["Ist dieser Platz noch frei?", "這個位子有人坐嗎？", "上車找座位時詢問。"],
+        ["Können Sie mir das auf der Karte zeigen?", "您可以在地圖上指給我看嗎？", "問路時使用。"]
+      ]},
+      {id:"shopping", name:"購物與退稅", desc:"詢價、試穿、超市袋子與退稅單。", items:[
+        ["Wie viel kostet das?", "這個多少錢？", "詢問價格。"],
+        ["Ich schaue mich nur um, danke.", "我只是看看，謝謝。", "婉拒店員推銷。"],
+        ["Haben Sie das in einer anderen Größe?", "這個有其他尺寸嗎？", "買衣服鞋子時使用。"],
+        ["Kann ich das anprobieren?", "我可以試穿嗎？", "詢問試衣間。"],
+        ["Brauchen Sie eine Tüte?", "您需要袋子嗎？", "超市結帳時店員常問（需付費）。"],
+        ["Den Kassenbon, bitte.", "麻煩給我收據。", "奧地利常說 die Rechnung 或 der Kassabon。"],
+        ["Kann ich ein Tax-Free-Formular bekommen?", "可以給我退稅單嗎？", "購物達退稅門檻時索取。"]
+      ]},
+      {id:"health", name:"住宿與緊急", desc:"飯店入住、藥局與突發狀況。", items:[
+        ["Ich habe eine Reservierung auf den Namen...", "我有訂房，登記的名字是……", "飯店辦理入住。"],
+        ["Wann ist Frühstück?", "早餐幾點開始？", "詢問飯店供餐時間。"],
+        ["Wo ist die nächste Apotheke?", "最近的藥局在哪裡？", "Apotheke 是藥局。"],
+        ["Mir ist nicht gut.", "我身體不太舒服。", "表達不適。"],
+        ["Ich brauche Hilfe.", "我需要幫助。", "緊急求助。"],
+        ["Ich habe meinen Geldbeutel verloren.", "我的錢包弄丟了。", "遺失物品時使用。"]
+      ]}
+    ]
+  },
+  fr: {
+    label: "🇫🇷 法文",
+    kicker: "FRANÇAIS AU QUOTIDIEN",
+    title: "法文生活與旅行手冊",
+    sub: "Le français pratique｜法國日常社交、餐飲與旅行必備",
+    langCode: "fr-FR",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"法國社交禮儀（開口先說 Bonjour）與基本應對。", items:[
+        ["Bonjour.", "您好。／日安。", "在法國進任何店舖、搭話前，務必先說一聲 Bonjour！"],
+        ["Bonsoir.", "晚上好。", "傍晚約 18:00 以後見面使用。"],
+        ["Merci beaucoup.", "非常感謝。", "日常道謝。"],
+        ["De rien. / Je vous en prie.", "不客氣。", "Je vous en prie 較為正式優雅。"],
+        ["Excusez-moi. / Pardon.", "不好意思。／借過。", "引起注意或道歉。"],
+        ["Au revoir.", "再見。", "標準禮貌道別。"],
+        ["Je parle un peu français.", "我只會說一點點法文。", "釋出善意的破冰句。"],
+        ["Je ne comprends pas.", "我聽不懂。", "直接表達聽不懂。"],
+        ["Pouvez-vous répéter, s'il vous plaît ?", "可以請您再說一次嗎？", "s'il vous plaît（請）是法語禮貌核心。"],
+        ["Pouvez-vous parler plus lentement ?", "您可以說慢一點嗎？", "請對方放慢語速。"],
+        ["Parlez-vous anglais ?", "您會說英文嗎？", "禮貌詢問是否能說英文。"]
+      ]},
+      {id:"food", name:"餐廳與咖啡館", desc:"點餐、免費水壺、牛排熟度與買單。", items:[
+        ["Bonjour, avez-vous une table pour deux ?", "您好，請問有兩人桌嗎？", "進餐廳先問候再問座位。"],
+        ["La carte, s'il vous plaît.", "麻煩給我菜單。", "法文菜單為 la carte 或 le menu。"],
+        ["Qu'est-ce que vous recommandez ?", "您推薦什麼？", "詢問主廚或店員推薦。"],
+        ["Je voudrais le plat du jour, s'il vous plaît.", "我想要今日特餐，謝謝。", "Je voudrais... 是最禮貌的「我想要」。"],
+        ["Une carafe d'eau, s'il vous plaît.", "請給我一壺免費自來水。", "在法國餐廳點 carafe d'eau 才是免費飲用水，否則會給收費瓶裝水。"],
+        ["Un café, s'il vous plaît.", "請給我一杯濃縮咖啡。", "在法國單點 un café 預設是 Espresso。"],
+        ["C'était délicieux.", "非常美味。", "結帳或離席時稱讚料理。"],
+        ["L'addition, s'il vous plaît.", "麻煩結帳。", "餐廳買單必備。"],
+        ["Je peux payer par carte ?", "我可以刷卡嗎？", "確認刷卡付款。"]
+      ]},
+      {id:"transport", name:"交通與問路", desc:"火車（SNCF）、地鐵與車站資訊。", items:[
+        ["Où est la gare ?", "火車站在哪裡？", "la gare 指火車站。"],
+        ["Où est la station de métro la plus proche ?", "最近的地鐵站在哪裡？", "市區移動實用。"],
+        ["Un billet pour Paris, s'il vous plaît.", "麻煩給我一張去巴黎的車票。", "pour + 目的地。"],
+        ["À quelle heure part le train ?", "火車幾點發車？", "詢問發車時間。"],
+        ["De quelle voie part le train ?", "火車從第幾月台（股道）出發？", "法國車站常在開車前 20 分鐘才公布 Voie（月台）。"],
+        ["Dois-je changer de train ?", "我需要換車嗎？", "確認是否為直達車。"],
+        ["Pouvez-vous me montrer sur la carte ?", "您可以在地圖上指給我看嗎？", "請路人指路。"]
+      ]},
+      {id:"shopping", name:"購物與退稅", desc:"商店禮儀、尺寸與退稅單（Détaxe）。", items:[
+        ["C'est combien ? / Combien ça coûte ?", "這個多少錢？", "詢問價格。"],
+        ["Je regarde seulement, merci.", "我只是看看，謝謝。", "回應店員詢問。"],
+        ["Avez-vous une autre taille ?", "有其他尺寸嗎？", "詢問衣服尺寸。"],
+        ["Je peux l'essayer ?", "我可以試穿嗎？", "詢問試穿。"],
+        ["Un sac, s'il vous plaît.", "麻煩給我一個袋子。", "結帳時索取提袋。"],
+        ["Je voudrais faire la détaxe, s'il vous plaît.", "我想辦理退稅，謝謝。", "法國退稅專有名詞為 la détaxe。"]
+      ]},
+      {id:"health", name:"住宿與緊急", desc:"飯店需求、藥局與求助。", items:[
+        ["J'ai une réservation au nom de...", "我有訂房，名字是……", "辦理入住。"],
+        ["Où est la pharmacie la plus proche ?", "最近的藥局在哪裡？", "法國藥妝與藥品都在綠色十字招牌的 Pharmacie。"],
+        ["Je ne me sens pas bien.", "我感覺不太舒服。", "身體不適。"],
+        ["Pouvez-vous m'aider, s'il vous plaît ?", "您可以幫幫我嗎？", "禮貌求助。"]
+      ]}
+    ]
+  },
+  es: {
+    label: "🇪🇸 西班牙語",
+    kicker: "ESPAÑOL PARA VIAJAR",
+    title: "西班牙語生活與旅行手冊",
+    sub: "Español práctico｜西班牙與拉丁美洲實用日常會話",
+    langCode: "es-ES",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"問候、道謝、請對方放慢速度。", items:[
+        ["¡Hola! Buenos días.", "嗨！早安／日安。", "午後改說 Buenas tardes，晚上說 Buenas noches。"],
+        ["Muchas gracias.", "非常感謝。", "日常道謝。"],
+        ["De nada.", "不客氣。", "回應感謝。"],
+        ["Perdón. / Disculpe.", "不好意思。／請問……", "借過或向陌生人搭話。"],
+        ["Adiós. / Hasta luego.", "再見。／待會見。", "Hasta luego 在日常口語極為常見。"],
+        ["Hablo un poco de español.", "我只會說一點點西班牙文。", "初學者自我介紹。"],
+        ["No entiendo.", "我聽不懂。", "直接明確。"],
+        ["¿Puede repetir, por favor?", "可以請您再說一次嗎？", "禮貌請求重複。"],
+        ["¿Puede hablar más despacio, por favor?", "可以請您說慢一點嗎？", "西語人士語速通常較快，這句非常實用。"],
+        ["¿Habla inglés?", "您會說英文嗎？", "詢問是否可用英文溝通。"]
+      ]},
+      {id:"food", name:"餐廳與Tapas", desc:"點餐、飲料與結帳。", items:[
+        ["¿Tiene una mesa para dos?", "請問有兩人桌嗎？", "進餐廳詢問座位。"],
+        ["La carta, por favor.", "麻煩給我菜單。", "索取菜單。"],
+        ["¿Qué me recomienda?", "您推薦什麼？", "詢問特色菜。"],
+        ["Quisiera una paella, por favor.", "我想要一份西班牙海鮮飯，謝謝。", "Quisiera... 語氣委婉有禮。"],
+        ["Una cerveza / Una copa de vino, por favor.", "請給我一杯啤酒／一杯葡萄酒。", "點酒水常用。"],
+        ["Agua sin gas, por favor.", "請給我無氣泡水。", "氣泡水為 agua con gas。"],
+        ["Estaba riquísimo.", "非常好吃。", "讚美食物美味。"],
+        ["La cuenta, por favor.", "麻煩結帳。", "餐廳買單必備。"],
+        ["¿Puedo pagar con tarjeta?", "可以刷卡嗎？", "確認刷卡方式。"]
+      ]},
+      {id:"transport", name:"交通與問路", desc:"高鐵（Renfe）、地鐵與問路。", items:[
+        ["¿Dónde está la estación de tren?", "火車站在哪裡？", "詢問火車站位置。"],
+        ["¿Dónde está el metro más cercano?", "最近的地鐵站在哪裡？", "市區交通。"],
+        ["Un billete a Barcelona, por favor.", "麻煩給我一張去巴塞隆納的車票。", "西班牙說 billete，拉美常說 boleto。"],
+        ["¿A qué hora sale el tren?", "火車幾點出發？", "詢問發車時間。"],
+        ["¿De qué andén sale?", "從第幾月台發車？", "andén 是月台。"],
+        ["¿Tengo que hacer transbordo?", "我需要轉車嗎？", "詢問轉乘。"],
+        ["¿Me lo puede señalar en el mapa?", "您可以在地圖上指給我看嗎？", "問路時使用。"]
+      ]},
+      {id:"shopping", name:"購物與退稅", desc:"詢價、試穿與 DIVA 退稅。", items:[
+        ["¿Cuánto cuesta esto?", "這個多少錢？", "詢問價格。"],
+        ["Solo estoy mirando, gracias.", "我只是看看，謝謝。", "回應店員。"],
+        ["¿Tiene otra talla?", "有其他尺寸嗎？", "詢問衣服尺寸。"],
+        ["¿Me lo puedo probar?", "我可以試穿嗎？", "詢問試衣間。"],
+        ["Necesito el formulario Tax Free (DIVA), por favor.", "我需要退稅單，謝謝。", "西班牙電子退稅系統稱為 DIVA。"]
+      ]},
+      {id:"health", name:"住宿與緊急", desc:"飯店、藥局與求助。", items:[
+        ["Tengo una reserva a nombre de...", "我有訂房，名字是……", "辦理入住。"],
+        ["¿Dónde está la farmacia más cercana?", "最近的藥局在哪裡？", "尋找藥局。"],
+        ["No me encuentro bien.", "我身體不太舒服。", "表達身體不適。"],
+        ["¿Me puede ayudar, por favor?", "您可以幫幫我嗎？", "緊急求助。"]
+      ]}
+    ]
+  },
+  it: {
+    label: "🇮🇹 義大利語",
+    kicker: "ITALIANO PER VIAGGIARE",
+    title: "義大利語生活與旅行手冊",
+    sub: "Italiano pratico｜義大利咖啡館、餐館與鐵道旅行會話",
+    langCode: "it-IT",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"問候、感謝與請對方慢一點。", items:[
+        ["Buongiorno.", "您好。／早安。", "白天通用的禮貌問候；傍晚改說 Buonasera。"],
+        ["Ciao!", "嗨！／拜拜！", "熟人之間輕鬆的問候與道別。"],
+        ["Arrivederci.", "再見。", "禮貌道別。"],
+        ["Grazie mille.", "非常感謝。", "日常萬用道謝。"],
+        ["Prego.", "不客氣；請；您請說。", "義大利人最常說的萬用字。"],
+        ["Scusi. / Mi scusi.", "不好意思。／請問……", "向陌生人搭話或借過。"],
+        ["Parlo solo un po' di italiano.", "我只會說一點點義大利文。", "表達自己是初學者。"],
+        ["Non capisco.", "我聽不懂。", "直接明確。"],
+        ["Può ripetere, per favore?", "可以請您再說一次嗎？", "禮貌請求重複。"],
+        ["Può parlare più lentamente, per favore?", "可以請您說慢一點嗎？", "請對方放慢語速。"],
+        ["Parla inglese?", "您會說英文嗎？", "詢問是否可用英文溝通。"]
+      ]},
+      {id:"food", name:"餐廳與咖啡吧", desc:"吧台咖啡、點餐、桌費與買單。", items:[
+        ["Avete un tavolo per due?", "請問有兩人桌嗎？", "進餐廳詢問座位。"],
+        ["Il menù, per favore.", "麻煩給我菜單。", "索取菜單。"],
+        ["Cosa ci consiglia?", "您推薦我們點什麼？", "詢問招牌菜。"],
+        ["Vorrei gli spaghetti alla carbonara.", "我想要一份培根蛋麵。", "Vorrei... 是最道地有禮的「我想要」。"],
+        ["Un caffè, per favore.", "請給我一杯義式濃縮咖啡。", "在義大利點 un caffè 就是 Espresso；拿鐵要說 caffellatte。"],
+        ["Una bottiglia d'acqua naturale, per favore.", "請給我一瓶無氣泡礦泉水。", "氣泡水為 acqua frizzante。"],
+        ["Era buonissimo!", "非常好吃！", "用餐後稱讚料理。"],
+        ["Il conto, per favore.", "麻煩結帳。", "餐廳買單必備。"],
+        ["Posso pagare con la carta?", "可以刷卡嗎？", "確認刷卡方式。"]
+      ]},
+      {id:"transport", name:"交通與問路", desc:"義鐵（Trenitalia）、車票打票與問路。", items:[
+        ["Dov'è la stazione ferroviaria?", "火車站在哪裡？", "尋找火車站。"],
+        ["Un biglietto per Firenze, per favore.", "麻煩給我一張去佛羅倫斯的車票。", "記得區間車（Regionale）紙本票上車前要在月台打票機打卡！"],
+        ["A che ora parte il treno?", "火車幾點出發？", "詢問發車時間。"],
+        ["Da quale binario parte?", "從第幾月台發車？", "binario 是月台。"],
+        ["Devo cambiare treno?", "我需要換車嗎？", "詢問轉車。"],
+        ["Può mostrarmelo sulla mappa?", "您可以在地圖上指給我看嗎？", "問路時使用。"]
+      ]},
+      {id:"shopping", name:"購物與退稅", desc:"詢價、試穿與退稅。", items:[
+        ["Quanto costa questo?", "這個多少錢？", "詢問價格。"],
+        ["Sto solo guardando, grazie.", "我只是看看，謝謝。", "回應店員。"],
+        ["Avete un'altra taglia?", "有其他尺寸嗎？", "詢問衣服尺寸。"],
+        ["Posso provarlo?", "我可以試穿嗎？", "詢問試衣間。"],
+        ["Vorrei il modulo Tax Free, per favore.", "我想要退稅單，謝謝。", "索取退稅單。"]
+      ]},
+      {id:"health", name:"住宿與緊急", desc:"飯店、藥局與求助。", items:[
+        ["Ho una prenotazione a nome...", "我有訂房，名字是……", "辦理入住。"],
+        ["Dov'è la farmacia più vicina?", "最近的藥局在哪裡？", "尋找藥局。"],
+        ["Non mi sento bene.", "我身體不太舒服。", "表達身體不適。"],
+        ["Può aiutarmi, per favore?", "您可以幫幫我嗎？", "禮貌求助。"]
+      ]}
+    ]
+  },
+  hu: {
+    label: "🇭🇺 匈牙利語",
+    kicker: "MAGYARUL A MINDENNAPOKBAN",
+    title: "匈牙利語生活與旅行手冊",
+    sub: "Gyakorlati magyar｜布達佩斯溫泉、咖啡館與日常會話",
+    langCode: "hu-HU",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"問候、感謝（Köszönöm）與基本應對。", items:[
+        ["Jó napot kívánok.", "您好。／日安。", "正式禮貌問候；晚上說 Jó estét kívánok。"],
+        ["Szia! / Sziasztok!", "嗨！／拜拜！", "熟人或年輕店員之間非常常用的打招呼與道別（對多人說 Sziasztok）。"],
+        ["Viszontlátásra.", "再見。", "正式禮貌的道別。"],
+        ["Köszönöm. / Köszönöm szépen.", "謝謝。／非常感謝。", "匈牙利語最核心的道謝字，口語常簡稱 Köszi。"],
+        ["Szívesen.", "不客氣。", "回應感謝。"],
+        ["Elnézést. / Bocsánat.", "不好意思。／對不起。", "借過或向陌生人搭話。"],
+        ["Csak egy kicsit beszélek magyarul.", "我只會說一點點匈牙利文。", "拉近距離的實用句。"],
+        ["Nem értem.", "我聽不懂。", "直接明確。"],
+        ["Meg tudná ismételni, kérem?", "可以請您再說一次嗎？", "禮貌請求重複。"],
+        ["Tudna lassabban beszélni?", "您可以說慢一點嗎？", "請對方放慢語速。"],
+        ["Beszél angolul?", "您會說英文嗎？", "詢問是否可用英文溝通。"]
+      ]},
+      {id:"food", name:"餐廳與咖啡館", desc:"布達佩斯百年咖啡館、燉牛肉湯與結帳。", items:[
+        ["Van szabad asztaluk két főre?", "請問有兩人空桌嗎？", "進餐廳詢問座位。"],
+        ["Az étlapot kérem.", "麻煩給我菜單。", "kérem 相當於英文的 please。"],
+        ["Mit ajánl?", "您推薦什麼？", "詢問店員推薦菜色。"],
+        ["Egy gulyáslevest kérek.", "我想要一份匈牙利燉牛肉湯。", "正宗匈牙利 Gulyás 是一道湯品（leves）。"],
+        ["Egy kávét kérek.", "請給我一杯咖啡。", "咖啡館點餐。"],
+        ["Mentes vizet kérek.", "請給我無氣泡水。", "氣泡水為 savas víz。"],
+        ["Nagyon finom volt.", "非常好吃。", "稱讚食物美味。"],
+        ["A számlát kérem.", "麻煩結帳。", "餐廳買單必備。"],
+        ["Tudok kártyával fizetni?", "我可以刷卡嗎？", "確認刷卡付款。"]
+      ]},
+      {id:"transport", name:"交通與溫泉", desc:"布達佩斯地鐵、火車站與買票。", items:[
+        ["Hol van a vasútállomás?", "火車站在哪裡？", "布達佩斯有 Keleti（東站）、Nyugati（西站）、Déli（南站）。"],
+        ["Hol van a legközelebbi metróállomás?", "最近的地鐵站在哪裡？", "布達佩斯 M1 號線是歐陸最古老的地鐵。"],
+        ["Egy jegyet kérek.", "麻煩給我一張車票。", "上車前請在橘色或紅色打票機打票。"],
+        ["Mikor indul a vonat?", "火車幾點出發？", "詢問發車時間。"],
+        ["Hányadik vágányról indul?", "從第幾月台發車？", "vágány 是月台／股道。"],
+        ["Hol van a Széchenyi gyógyfürdő?", "塞切尼溫泉浴場在哪裡？", "gyógyfürdő 指溫泉浴場。"]
+      ]},
+      {id:"shopping", name:"購物與採買", desc:"中央市場、詢價與付款。", items:[
+        ["Mennyibe kerül ez?", "這個多少錢？", "詢問價格。"],
+        ["Csak nézelődöm, köszönöm.", "我只是看看，謝謝。", "回應店員。"],
+        ["Van más méretben?", "有其他尺寸嗎？", "詢問尺寸。"],
+        ["Kérek egy zacskót.", "麻煩給我一個袋子。", "結帳索取提袋。"],
+        ["Kártyával fizetek.", "我用刷卡付款。", "告知付款方式。"]
+      ]},
+      {id:"health", name:"住宿與緊急", desc:"飯店、藥局與求助。", items:[
+        ["Van foglalásom...", "我有訂房，名字是……", "辦理入住。"],
+        ["Hol van a legközelebbi gyógyszertár?", "最近的藥局在哪裡？", "尋找藥局。"],
+        ["Nem érzem jól magam.", "我身體不太舒服。", "表達不適。"],
+        ["Segítséget kérek.", "我需要幫助。", "緊急求助。"]
+      ]}
+    ]
+  },
+  cs: {
+    label: "🇨🇿 捷克語",
+    kicker: "ČEŠTINA PRO ŽIVOT",
+    title: "捷克生活與旅行手冊",
+    sub: "Praktická čeština pro každý den｜布拉格日常核心句庫",
+    langCode: "cs-CZ",
+    units: [
+      {id:"basic", name:"基本溝通", desc:"打招呼、道謝、道歉，以及聽不懂時如何應對。", items:[
+        ["Dobrý den.", "您好。／日安。", "正式場合最安全的打招呼方式。"],
+        ["Ahoj!", "嗨！／再見！", "朋友、家人之間使用，熟人見面或道別都可以。"],
+        ["Na shledanou.", "再見。", "禮貌、正式的道別方式。"],
+        ["Děkuju.", "謝謝。", "日常口語很常聽到的說法。"],
+        ["Prosím.", "請；不客氣；請說。", "意思依情境改變，是非常常用的字。"],
+        ["Promiňte.", "不好意思。／對不起。", "對陌生人或不熟的人使用。"],
+        ["Mluvím jen trochu česky.", "我只會說一點點捷克語。", "很適合初學者先學會的一句話。"],
+        ["Nerozumím.", "我聽不懂。", "直接、簡短而實用。"],
+        ["Můžete to prosím zopakovat?", "可以請您再說一次嗎？", "禮貌地請對方重複。"],
+        ["Můžete mluvit pomaleji?", "您可以說慢一點嗎？", "對方說太快時使用。"],
+        ["Mluvíte anglicky?", "您會說英文嗎？", "向陌生人詢問，使用禮貌的您。"],
+        ["Jak se máte?", "您好嗎？", "禮貌問候；對朋友可說 Jak se máš?。"]
+      ]},
+      {id:"food", name:"餐廳飲食", desc:"點餐、詢問菜色、結帳，以及在咖啡館自然地開口。", items:[
+        ["Dobrý den, máte volný stůl?", "您好，請問有空桌嗎？", "進餐廳時詢問。"],
+        ["Jeden stůl pro jednoho, prosím.", "麻煩一張一人桌。", "若兩人同行，可把 jednoho 改成 dva。"],
+        ["Chtěl bych jídelní lístek, prosím.", "麻煩給我菜單。", "男性說話者使用 chtěl bych。"],
+        ["Co doporučujete?", "您推薦什麼？", "向服務人員詢問推薦菜色。"],
+        ["Dám si guláš, prosím.", "我要一份燉牛肉，謝謝。", "Dám si 是點餐很自然的說法。"],
+        ["Ještě jedno pivo, prosím.", "再來一杯啤酒，謝謝。", "把 pivo 換成其他飲料也可以。"],
+        ["Vodu, prosím.", "請給我水。", "簡短實用。"],
+        ["Bez ledu, prosím.", "請不要加冰。", "點飲料時使用。"],
+        ["Bylo to výborné.", "非常好吃。", "用餐後稱讚食物。"],
+        ["Účet, prosím.", "麻煩結帳。", "餐廳常用句。"],
+        ["Můžu platit kartou?", "可以刷卡嗎？", "結帳前詢問。"],
+        ["Dohromady, nebo zvlášť?", "一起付，還是分開付？", "服務人員可能會這樣問你。"]
+      ]},
+      {id:"transport", name:"交通旅行", desc:"火車、電車、地鐵、買票與問路。", items:[
+        ["Kde je nejbližší stanice metra?", "最近的地鐵站在哪裡？", "在布拉格市區很實用。"],
+        ["Kde je nádraží?", "火車站在哪裡？", "nádraží 指火車站。"],
+        ["Jednu jízdenku do Brna, prosím.", "麻煩給我一張到布爾諾的車票。", "將 Brna 換成目的地的捷克語地名形式。"],
+        ["V kolik hodin odjíždí vlak?", "火車幾點出發？", "詢問發車時間。"],
+        ["Z jakého nástupiště?", "從第幾月台？", "詢問月台。"],
+        ["Musím přestupovat?", "我需要轉車嗎？", "搭火車時很實用。"],
+        ["Kde mám vystoupit?", "我應該在哪裡下車？", "搭乘大眾運輸時使用。"],
+        ["Můžete mi ukázat cestu na mapě?", "您可以在地圖上指給我看嗎？", "問路時使用。"]
+      ]},
+      {id:"shopping", name:"購物採買", desc:"超市、商店、詢價、尺寸與付款。", items:[
+        ["Kolik to stojí?", "這個多少錢？", "詢問價格。"],
+        ["Jen se dívám, děkuju.", "我只是看看，謝謝。", "店員詢問是否需要幫忙時可用。"],
+        ["Potřebuju tašku.", "我需要一個袋子。", "購物時使用。"],
+        ["Máte jinou velikost?", "有其他尺寸嗎？", "買衣服、鞋子時使用。"],
+        ["Můžu si to vyzkoušet?", "我可以試穿嗎？", "試衣服時使用。"],
+        ["Účtenku, prosím.", "麻煩給我收據。", "結帳後索取收據。"]
+      ]},
+      {id:"health", name:"健康與緊急", desc:"身體不舒服、求助、藥局與緊急狀況。", items:[
+        ["Potřebuju pomoc.", "我需要幫助。", "遇到困難時使用。"],
+        ["Kde je nejbližší lékárna?", "最近的藥局在哪裡？", "lékárna 是藥局。"],
+        ["Není mi dobře.", "我不太舒服。", "描述身體不適。"],
+        ["Ztratil jsem peněženku.", "我的錢包弄丟了。", "男性說話者使用 ztratil。"],
+        ["Můžete mi prosím pomoct?", "您可以幫幫我嗎？", "通用求助句。"]
+      ]}
+    ]
+  }
+};
+
+let currentLang = "de";
+let activeUnit = "basic";
+let onlyFav = false;
+let favorites = new Set(JSON.parse(localStorage.getItem("polyglot-favs") || "[]"));
+
+const langBar = document.getElementById("langBar");
+const tabs = document.getElementById("tabs");
+const cards = document.getElementById("cards");
+const search = document.getElementById("search");
+
+function saveFav() {
+  localStorage.setItem("polyglot-favs", JSON.stringify([...favorites]));
+}
+
+function renderLangBar() {
+  langBar.innerHTML = "";
+  Object.keys(db).forEach(code => {
+    const btn = document.createElement("button");
+    btn.className = "lang-btn" + (code === currentLang ? " active" : "");
+    btn.textContent = db[code].label;
+    btn.onclick = () => {
+      currentLang = code;
+      activeUnit = db[code].units[0].id;
+      onlyFav = false;
+      document.getElementById("favOnly").classList.remove("active");
+      document.getElementById("allItems").classList.add("active");
+      updateHeader();
+      renderLangBar();
+      renderTabs();
+      renderCards();
+    };
+    langBar.appendChild(btn);
+  });
+}
+
+function updateHeader() {
+  const L = db[currentLang];
+  document.getElementById("headerKicker").textContent = L.kicker;
+  document.getElementById("headerTitle").textContent = L.title;
+  document.getElementById("headerSub").textContent = L.sub;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  db[currentLang].units.forEach(u => {
+    const b = document.createElement("button");
+    b.className = "tab" + (u.id === activeUnit && !onlyFav ? " active" : "");
+    b.textContent = u.name;
+    b.onclick = () => {
+      activeUnit = u.id;
+      onlyFav = false;
+      document.getElementById("favOnly").classList.remove("active");
+      document.getElementById("allItems").classList.add("active");
+      renderTabs();
+      renderCards();
+    };
+    tabs.appendChild(b);
+  });
+}
+
+// 修正後的語音播放函式：強化慢速區別 (0.55 vs 0.95) 並解決 Chrome cancel 延遲問題
+function speak(text, rate = 0.95) {
+  if (!("speechSynthesis" in window)) {
+    alert("這個瀏覽器不支援語音播放，請改用最新版 Chrome。");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const targetLang = db[currentLang].langCode;
+  const prefix = targetLang.split("-")[0].toLowerCase();
+
+  setTimeout(() => {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = targetLang;
+    utter.rate = rate;
+    utter.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    // 優先尋找 Google 雲端語音（對語速調整最敏感且發音最自然），其次找本機對應語言
+    const matchedVoice =
+      voices.find(v => v.lang.toLowerCase() === targetLang.toLowerCase() && v.name.includes("Google")) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix) && v.name.includes("Google")) ||
+      voices.find(v => v.lang.toLowerCase() === targetLang.toLowerCase()) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix));
+
+    if (matchedVoice) {
+      utter.voice = matchedVoice;
+    }
+    window.speechSynthesis.speak(utter);
+  }, 40);
+}
+
+function renderCards() {
+  const L = db[currentLang];
+  const unit = L.units.find(u => u.id === activeUnit) || L.units[0];
+  document.getElementById("sectionTitle").textContent = onlyFav ? `${L.label}｜我的收藏` : unit.name;
+  document.getElementById("sectionDesc").textContent = onlyFav ? "已收藏的常用句，可隨時切換常速與慢速聆聽。" : unit.desc;
+
+  let items = L.units.flatMap(u =>
+    u.items.map((it, i) => ({
+      text: it[0],
+      zh: it[1],
+      hint: it[2],
+      unit: u,
+      key: `${currentLang}-${u.id}-${i}`
+    }))
+  );
+
+  if (!onlyFav) {
+    items = items.filter(x => x.unit.id === activeUnit);
+  } else {
+    items = items.filter(x => favorites.has(x.key));
+  }
+
+  const q = search.value.trim().toLowerCase();
+  if (q) {
+    items = items.filter(x =>
+      x.text.toLowerCase().includes(q) ||
+      x.zh.toLowerCase().includes(q) ||
+      x.hint.toLowerCase().includes(q) ||
+      x.unit.name.toLowerCase().includes(q)
+    );
+  }
+
+  document.getElementById("count").textContent = items.length + " 句";
+  cards.innerHTML = "";
+
+  if (!items.length) {
+    cards.innerHTML = '<div class="empty">沒有找到符合的內容。<br>試試其他關鍵字，或先點擊卡片右上角的 ☆ 收藏常用句。</div>';
+    return;
+  }
+
+  items.forEach(x => {
+    const article = document.createElement("article");
+    article.className = "phrase";
+
+    const top = document.createElement("div");
+    top.className = "topline";
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = x.unit.name;
+
+    const star = document.createElement("button");
+    star.className = "star" + (favorites.has(x.key) ? " saved" : "");
+    star.textContent = favorites.has(x.key) ? "★" : "☆";
+    star.title = "加入／取消收藏";
+    star.onclick = () => {
+      favorites.has(x.key) ? favorites.delete(x.key) : favorites.add(x.key);
+      saveFav();
+      renderCards();
+    };
+    top.append(tag, star);
+
+    const targetEl = document.createElement("div");
+    targetEl.className = "target-text";
+    targetEl.textContent = x.text;
+
+    const zh = document.createElement("div");
+    zh.className = "chinese";
+    zh.textContent = x.zh;
+
+    const hint = document.createElement("div");
+    hint.className = "hint";
+    hint.textContent = x.hint;
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const play = document.createElement("button");
+    play.className = "play";
+    play.innerHTML = "🔊 聽發音";
+    play.onclick = () => speak(x.text, 0.95);
+
+    const slow = document.createElement("button");
+    slow.className = "slow";
+    slow.innerHTML = "🐢 慢速";
+    slow.onclick = () => speak(x.text, 0.55);
+
+    actions.append(play, slow);
+    article.append(top, targetEl, zh, hint, actions);
+    cards.appendChild(article);
+  });
+}
+
+search.addEventListener("input", renderCards);
+document.getElementById("favOnly").onclick = () => {
+  onlyFav = true;
+  document.getElementById("favOnly").classList.add("active");
+  document.getElementById("allItems").classList.remove("active");
+  renderTabs();
+  renderCards();
+};
+document.getElementById("allItems").onclick = () => {
+  onlyFav = false;
+  document.getElementById("favOnly").classList.remove("active");
+  document.getElementById("allItems").classList.add("active");
+  renderTabs();
+  renderCards();
+};
+
+updateHeader();
+renderLangBar();
+renderTabs();
+renderCards();
+
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+</script>
+</body>
+</html>
